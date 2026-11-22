@@ -6,6 +6,7 @@
     "name": "Md Imran Hossen",
     "url": "https://github.com/imranhc0"
   },
+  "license": "MIT",
   "homepage": "https://github.com/imranhc0/vibes",
   "repository": "https://github.com/imranhc0/vibes",
   "keywords": ["workflow", "sdlc", "security-audit", "playwright", "testing"]

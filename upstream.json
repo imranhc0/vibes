@@ -1,0 +1,30 @@
+{
+  "vibes-plan": {
+    "repo": "mattpocock/skills",
+    "branch": "main",
+    "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
+    "paths": [
+      "skills/engineering/grill-with-docs",
+      "skills/productivity/grilling",
+      "skills/engineering/domain-modeling"
+    ]
+  },
+  "vibes-design": {
+    "repo": "anthropics/skills",
+    "branch": "main",
+    "commit": "e4bb5d960d87126ff3b3a8af1a104b7db67560ba",
+    "paths": ["skills/frontend-design"]
+  },
+  "vibes-react": {
+    "repo": "vercel-labs/agent-skills",
+    "branch": "main",
+    "commit": "5a37a6329fbad3666c3207392a6a7c0110e92efb",
+    "paths": ["skills/react-best-practices"]
+  },
+  "vibes-simplify": {
+    "repo": "anthropics/claude-plugins-official",
+    "branch": "main",
+    "commit": "73c8cf3ea7e296057b467990f2f5d61b4c922260",
+    "paths": ["plugins/code-simplifier"]
+  }
+}
