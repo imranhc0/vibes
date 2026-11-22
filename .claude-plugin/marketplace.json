@@ -1,0 +1,16 @@
+{
+  "name": "vibes-skills",
+  "owner": {
+    "name": "Md Imran Hossen"
+  },
+  "metadata": {
+    "description": "The vibes skills for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "vibes",
+      "source": "./",
+      "description": "Vibe coding with a proper lifecycle: plan, design, build, simplify, security-audit, test and a release-readiness checklist."
+    }
+  ]
+}
