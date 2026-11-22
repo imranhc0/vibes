@@ -69,7 +69,26 @@ The same commands work from a shell as `claude plugin marketplace add ...` and `
 
 Restart Claude Code after installing. Plugin skills are namespaced, so you invoke them as `/vibes:vibes`, `/vibes:vibes-security-audit` and `/vibes:vibes-test`. Claude also picks them up automatically when your request matches, for example "audit my changes" or "write e2e tests for this page".
 
-### Option 2: Copy into your skills folder
+### Option 2: npx (skills CLI)
+
+[`skills`](https://github.com/vercel-labs/skills) is an open-source installer for agent skills. It works with Claude Code and many other coding agents. It needs Node.js 22.20 or later and no clone.
+
+```bash
+# All three skills, for every project (~/.claude/skills/)
+npx skills add imranhc0/vibes -g -a claude-code
+
+# All three skills, for the current project only (.claude/skills/)
+npx skills add imranhc0/vibes -a claude-code
+
+# Just one skill
+npx skills add imranhc0/vibes --skill vibes-security-audit -a claude-code
+```
+
+Leave out `-a claude-code` to choose agents interactively. The CLI sends anonymous usage data unless you set `DISABLE_TELEMETRY=1`.
+
+Start a new Claude Code session. Skills installed this way have no namespace: `/vibes`, `/vibes-security-audit`, `/vibes-test`.
+
+### Option 3: Copy into your skills folder
 
 Copy the skills into one of these folders:
 
@@ -86,7 +105,7 @@ For a single project, swap `~/.claude/skills` for `<repo>/.claude/skills`.
 
 Start a new Claude Code session. Skills installed this way have no namespace: `/vibes`, `/vibes-security-audit`, `/vibes-test`.
 
-### Option 3: Symlink a clone (for editing the skills)
+### Option 4: Symlink a clone (for editing the skills)
 
 Use this if you're changing the skills and want edits to take effect without copying again.
 
@@ -172,6 +191,7 @@ vibes asks whether you want `.vibes/` committed as a record or added to `.gitign
 | Installed with | Update | Uninstall |
 |---|---|---|
 | Plugin | `claude plugin marketplace update vibes-skills`, then `claude plugin update vibes@vibes-skills` | `claude plugin uninstall vibes@vibes-skills` |
+| npx | `npx skills update` | `npx skills remove vibes vibes-security-audit vibes-test` (add `-g` if installed globally) |
 | Copy | `git pull` in your clone, then copy the folders again | delete the three folders from your skills directory |
 | Symlink | `git pull` in your clone | delete the three links from your skills directory |
 
