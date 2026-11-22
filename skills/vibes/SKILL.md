@@ -11,10 +11,10 @@ vibes is a conductor. It doesn't do the specialist work itself; it decides which
 
 | # | Phase | Calls | Output |
 |---|---|---|---|
-| 1 | Plan | `grill-with-docs` skill | `.vibes/plan.md` |
-| 2 | Design (UI work only) | `frontend-design` skill | design notes in `.vibes/plan.md`, UI code |
-| 3 | Build | `vercel-react-best-practices` skill (React/Next.js) or stack-idiomatic rules below | code changes |
-| 4 | Simplify | `code-simplifier` agent | cleaner code, same behaviour |
+| 1 | Plan | `vibes-plan` skill | `.vibes/plan.md` |
+| 2 | Design (UI work only) | `vibes-design` skill | design notes in `.vibes/plan.md`, UI code |
+| 3 | Build | `vibes-react` skill (React/Next.js) or stack-idiomatic rules below | code changes |
+| 4 | Simplify | `vibes-simplify` skill | cleaner code, same behaviour |
 | 5 | Security audit | `vibes-security-audit` skill | `.vibes/security-audit.md` |
 | 6 | Test | `vibes-test` skill | test files + `.vibes/test-report.md` |
 | 7 | Fix loop | back to 3-6 as needed | - |
@@ -44,13 +44,13 @@ Create `.vibes/` at the repo root for phase outputs. If `.gitignore` exists and 
 
 ## Calling sub-skills
 
-Invoke each specialist with the Skill tool by name (the code-simplifier is an agent, so use the Agent tool for it). Give each one the context it needs: the plan, the stack, the files changed so far. Don't paste the whole conversation; point to `.vibes/plan.md` and the diff.
+Invoke each specialist with the Skill tool by name. Give each one the context it needs: the plan, the stack, the files changed so far. Don't paste the whole conversation; point to `.vibes/plan.md` and the diff.
 
-Installed names vary by how the user installed them. Before each phase, check the available skills/agents list for the expected name or a close variant (for example `vercel-react-best-practices` or `react-best-practices`; `code-simplifier` or `code-simplifier:code-simplifier`). If a specialist isn't installed, don't stall: use the fallback for that phase below, and tell the user once, at the end, which skills were missing and how to get them (see "Missing skills").
+Every specialist ships in this bundle. The installed name depends on how the bundle was installed: plain (`vibes-plan`) when the skills were copied into a skills folder, namespaced (`vibes:vibes-plan`) when installed as a plugin. Check the available skills list for either form. If a specialist isn't installed (for example, only `vibes` was installed), don't stall: use the fallback for that phase below, and tell the user once, at the end, which skills were missing (see "Missing skills").
 
-### 1. Plan → `grill-with-docs`
+### 1. Plan → `vibes-plan`
 
-The point of planning is to surface the decisions the user hasn't made yet before code locks them in. Call `grill-with-docs` with the feature request and what you learned in Step 0. Let it interview the user; this is the one phase where back-and-forth is expected.
+The point of planning is to surface the decisions the user hasn't made yet before code locks them in. Call `vibes-plan` with the feature request and what you learned in Step 0. Let it interview the user; this is the one phase where back-and-forth is expected.
 
 When it finishes, write `.vibes/plan.md`:
 
@@ -71,15 +71,15 @@ Confirm the plan with the user before building. This is the main checkpoint; aft
 
 *Fallback*: interview the user yourself, at most 5 sharp questions focused on scope, data, edge cases and who can access what, reading any docs in the repo (`README`, `docs/`, ADRs) first so you don't ask what's already written down. Then write the same plan file.
 
-### 2. Design → `frontend-design`
+### 2. Design → `vibes-design`
 
-Only when the work has a UI. Call `frontend-design` with the plan's UI section and the existing design system (look for Tailwind config, CSS variables, a component library, existing pages to match). Matching the existing product beats inventing a new look; ask for a distinctive direction only for greenfield work. Append a short "Design notes" section to the plan: layout, components, tokens, every state.
+Only when the work has a UI. Call `vibes-design` with the plan's UI section and the existing design system (look for Tailwind config, CSS variables, a component library, existing pages to match). Matching the existing product beats inventing a new look; ask for a distinctive direction only for greenfield work. Append a short "Design notes" section to the plan: layout, components, tokens, every state.
 
 *Fallback*: match existing components and tokens; design all states (loading, empty, error, success); keep it accessible (semantic HTML, labels, focus states, contrast, keyboard paths); make it responsive.
 
 ### 3. Build → best practices
 
-For React or Next.js, load `vercel-react-best-practices` before writing code and follow it. For other stacks, follow the fallback rules. Either way:
+For React or Next.js, load `vibes-react` before writing code and follow it. For other stacks, follow the fallback rules. Either way:
 
 - Build in small vertical slices and run the app or a type check as you go, rather than writing everything then debugging at the end.
 - Validate input at every trust boundary (API handlers, server actions, form posts), on the server.
@@ -89,9 +89,9 @@ For React or Next.js, load `vercel-react-best-practices` before writing code and
 
 *Fallback (any stack)*: follow the project's existing patterns and linter; strict typing where the language allows; small focused functions; no dead code; avoid N+1 queries and unbounded lists (paginate); parallelise independent async work; avoid shipping server-only code to the client.
 
-### 4. Simplify → `code-simplifier` agent
+### 4. Simplify → `vibes-simplify`
 
-Call the code-simplifier agent on the files changed in this session (`git diff --name-only` plus new files). Ask it to preserve behaviour exactly. Then run the type check / linter / existing tests to confirm nothing broke; if something did, revert that simplification rather than debugging it.
+Call `vibes-simplify` on the files changed in this session. It preserves behaviour exactly, then runs the type check, linter and existing tests, and reverts any simplification that breaks them.
 
 *Fallback*: do a pass yourself: remove duplication, unnecessary abstraction, dead code and nested conditionals; clarify names; keep behaviour identical.
 
@@ -135,13 +135,7 @@ Be honest about gaps. A phase that couldn't run (no dev server, tool missing, te
 
 ## Missing skills
 
-If a specialist was unavailable, list it in the report with where it comes from, so the user can install it. Install commands change, so point to the source and let the user confirm the current command there:
-
-- `grill-with-docs` - Matt Pocock's skills (github.com/mattpocock/skills)
-- `frontend-design` - Anthropic's skills (github.com/anthropics/skills)
-- `vercel-react-best-practices` - Vercel's agent skills (github.com/vercel-labs/agent-skills)
-- `code-simplifier` - Anthropic's official plugins (github.com/anthropics/claude-plugins-official), installed as a plugin; it provides an agent, not a skill
-- `vibes-security-audit`, `vibes-test` - part of this vibes bundle
+If a specialist was unavailable, list it in the report so the user can install it. All of them are part of this vibes bundle (github.com/imranhc0/vibes): `vibes-plan`, `vibes-design`, `vibes-react`, `vibes-simplify`, `vibes-security-audit`, `vibes-test`.
 
 ## Running one phase
 
